@@ -1,24 +1,68 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
+function RepeatMessage({message}) {
+  useEffect(() => {
+    const id = setInterval(() => {
+      console.log(message)
+    }, 2000);
+    return () => {
+      clearInterval(id);
+    }
+  });
+  return <div>Logging to console {message}</div>
+}
+
 function App() {
+  console.log("rendering");
+
+  // const getLanguage = () => {
+  //   console.log("get language from local storage")
+  //   return window.localStorage.getItem("language") || "";
+  // };
+
+  const [language, setLanguage] = useState(
+    () => window.localStorage.getItem("language") || ""
+  );
+
+  const [count, setCount] = useState(
+    () => Number(window.localStorage.getItem("count")) || 0
+  );
+
+  useEffect(() => {
+    console.log("change title")
+    document.title = "Intro to useEffect"}
+  , []);
+
+  useEffect(() => {
+    console.log("set language in local storage")
+    window.localStorage.setItem('language', language);
+  }, [language])
+
+  useEffect(() => {
+    console.log("update count");
+    window.localStorage.setItem("count", count);
+  }, [count])
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div>
+        <label htmlFor="language">Favorite Language: </label>
+        <input  
+          id="language"
+          value={language} 
+          onChange={(event) => setLanguage(event.target.value)} 
+        />
+        {language ? (
+          <div>{`Your favorite language is ${language}`}</div>
+          ) : (
+          <div>Please type your favorite language</div>
+        )}
+      </div>
+      <br/>
+      <button onClick={() => setCount(count+1)}>{count}</button>
+      {/* <RepeatMessage message={language} /> */}
+    </>
   );
 }
 
